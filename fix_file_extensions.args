@@ -1,0 +1,51 @@
+# Rename files with incorrect extensions
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# References:
+# https://exiftool.org/forum/index.php?topic=12361.0
+
+# Skip minor errors and warnings
+-ignoreMinorErrors
+
+# Allow duplicate tag names to be extracted
+-duplicates
+
+# Extract values of unknown tags
+-unknown
+
+# And also extract unknown information from binary data blocks
+-unknown2
+
+# Show processed filenames
+-v0
+
+# Show progress on console and console title
+-progress:ExifTool %p%%
+-progress
+
+# Recurse all subdirs
+-r
+
+# Process everything except JSON files
+--ext
+json
+
+# Detect incorrect extensions
+-if
+(($FileType eq "JPEG" and (uc $FileExtension ne "JPG" and uc $FileExtension ne "JPEG")) or ($FileType eq "PNG" and (uc $FileExtension ne "PNG" )) or ($FileType eq "DNG" and (uc $FileExtension ne "DNG" )) or ($FileType eq "CR2" and (uc $FileExtension ne "CR2" )) or ($Filetype eq "MP4" and (uc $FileExtension ne "MP4")) or ($Filetype eq "MOV" and (uc $FileExtension ne "MOV" )) or ($Filetype eq "3GP" and (uc $FileExtension ne "3GP" )))
+
+
+# ... and rename to correct type
+-Filename<${BaseName}.${FileType;$_=lc}
+
+# Overwrite original files. If this option is not specified, ExifTool
+# makes a copy of the original file with extension "_original" in the
+# source directory. If you wish to copy the files instead of overwriting
+# them, see example 5 at https://exiftool.org/filename.html about
+# using the '-o' option.
+-overwrite_original
+
+# Preserve the filesystem modification date/time when writing
+-preserve
