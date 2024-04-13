@@ -26,12 +26,6 @@
 # Recurse all subdirs
 -r
 
-# Process JPEG files
--ext
-jpg
--ext
-jpeg
-
 # Try to detect with best effort if the image is taken with camera,
 # and is not a screenshot etc.
 -if
