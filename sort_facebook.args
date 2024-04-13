@@ -1,0 +1,47 @@
+# Sort images taken with camera to folders sorted by year
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+
+# Skip minor errors and warnings
+-ignoreMinorErrors
+
+# Allow duplicate tag names to be extracted
+-duplicates
+
+# Extract values of unknown tags
+-unknown
+
+# And also extract unknown information from binary data blocks
+-unknown2
+
+# Show processed filenames
+-v0
+
+# Show progress on console and console title
+-progress:ExifTool %p%%
+-progress
+
+# Recurse all subdirs
+-r
+
+# Try to detect with best effort if the image is taken with camera,
+# and is not a screenshot etc.
+-if
+($FileType eq "JPEG" and $FileName=~m/^FB_IMG.*\.jpe?g/i and $EXIF:DateTimeOriginal and ($EXIF:DateTimeOriginal ne "0000:00:00 00:00:00"))
+
+# Sort files
+-d
+Facebook/%Y
+-Directory<DateTimeOriginal
+
+# Overwrite original files. If this option is not specified, ExifTool
+# makes a copy of the original file with extension "_original" in the
+# source directory. If you wish to copy the files instead of overwriting
+# them, see example 5 at https://exiftool.org/filename.html about
+# using the '-o' option.
+-overwrite_original
+
+# Preserve the filesystem modification date/time when writing
+-preserve
