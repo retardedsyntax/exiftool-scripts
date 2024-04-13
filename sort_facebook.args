@@ -1,4 +1,4 @@
-# Sort images taken with camera to folders sorted by year
+# Sort Facebook images to folders sorted by year
 #
 # Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
 # Writing file/directory names: https://exiftool.org/filename.html
@@ -26,8 +26,7 @@
 # Recurse all subdirs
 -r
 
-# Try to detect with best effort if the image is taken with camera,
-# and is not a screenshot etc.
+# Try to filter for only Facebook images
 -if
 ($FileType eq "JPEG" and $FileName=~m/^FB_IMG.*\.jpe?g/i and $EXIF:DateTimeOriginal and ($EXIF:DateTimeOriginal ne "0000:00:00 00:00:00"))
 
