@@ -2,6 +2,8 @@
 ## TL;DR
 To fix the metadata and clobber the originals:
 ```
+exiftool -@ fix_albuminfo_json_name.args <takeout_dir>
+exiftool -@ fix_media_json_name.args <takeout_dir>
 exiftool -@ use_json.args <takeout_dir>
 exiftool -@ jpg_to_mp4.args <takeout_dir>
 exiftool -@ jpg_to_png.args <takeout_dir>
