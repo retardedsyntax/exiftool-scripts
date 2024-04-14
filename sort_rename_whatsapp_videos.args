@@ -1,0 +1,46 @@
+# Sort and rename WhatsApp videos to folders sorted by year. Following metadata
+# tags are also added to identify video source in the future:
+# -ItemList:ProductVersion=WhatsApp
+# -ItemList:Author=WhatsApp
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# References:
+# https://github.com/photoprism/photoprism/issues/1102#issuecomment-1217705195
+# https://exiftool.org/TagNames/QuickTime.html#ItemList
+# https://exiftool.org/TagNames/QuickTime.html#UserData
+
+# Common options, see COMMONARGS.md for details.
+-api
+LargeFileSupport=1
+-duplicates
+-unknown2
+-ignoreMinorErrors
+-progress
+-progress:ExifTool %p%%
+-overwrite_original
+-preserve
+-r
+
+# Attempt best effort filtering to match only WhatsApp videos.
+# - Filter for videos only
+# - Attempt matching typical filenames
+# - Check for custom tags
+-if
+(($MIMEType=~/video/) and (($FileName=~m/.*WA[0-9]+\.mp4/i) or ((defined $ItemList:ProductVersion and $ItemList:ProductVersion eq "WhatsApp") or (defined $ItemList:Author and $ItemList:Author eq "WhatsApp"))))
+
+# In most cases, WhatsApp videos don't have QuickTime TrackCreateDate set and we can't
+# attempt to create the date from filename etc., as Exiftool doesn't accept 'common_args'
+# from argfile (which would allow to have '-execute' actions).
+-if
+($QuickTime:TrackCreateDate and ($QuickTime:TrackCreateDate ne "0000:00:00 00:00:00"))
+
+# Sort and rename files
+-d
+%Y/Video_%Y%m%d-%H%M%S-WA%%.4c.%%e
+-FileName<QuickTime:TrackCreateDate
+
+# Add metadata tags
+-ItemList:ProductVersion=WhatsApp
+-ItemList:Author=WhatsApp
