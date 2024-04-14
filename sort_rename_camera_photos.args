@@ -1,0 +1,30 @@
+# Sort and rename images taken with camera to folders sorted by year.
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+
+# Common options, see COMMONARGS.md for details.
+-api
+LargeFileSupport=1
+-duplicates
+-unknown2
+-ignoreMinorErrors
+-progress
+-progress:ExifTool %p%%
+-overwrite_original
+-preserve
+-r
+
+# Attempt best effort filtering to match only images taken with camera.
+# - Filter for images only
+# - Attempt matching typical filenames
+# - Check that camera make/model is not set (usually not present)
+# - Check for custom tags
+-if
+($MIMEType=~/image/ and (defined $Make and $Make ne "") and (defined $Model and $Model ne "") and $EXIF:DateTimeOriginal and ($EXIF:DateTimeOriginal ne "0000:00:00 00:00:00") and ($Software ne "WhatsApp" and $XMP:Creator ne "WhatsApp"))
+
+# Sort and rename files
+-d
+%Y/Photo_%Y%m%d-%H%M%S%%-c.%%e
+-FileName<DateTimeOriginal
