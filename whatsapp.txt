@@ -1,0 +1,16 @@
+# https://github.com/photoprism/photoprism/issues/1102#issuecomment-1217705195
+
+# Look for JPEG files, where filename is of following format:
+#  - starts with 'IMG-'
+#  - has 8 numbers which look like a date YYYYMMDD
+#  - optional separator, usually dash but can be anything
+#  - optionally 6 numbers which look like a timestamp HHMMSS (rarely)
+#  - anything that is not a number (to make sure long runs of numbers are rejected)
+#  - "sequence numbering" in format WA1234
+#  - dot after sequence, with extension following
+#-if
+#($FileType eq "JPEG" and $FileName=~/^IMG-([0-9]{8}).?([0-9]{6})?[^0-9].*WA([0-9]{1,4})\..*/)
+# Rename files to desired format.
+#-TestName<${FileName;s/^IMG-([0-9]{8}).?([0-9]{6})?[^0-9].*WA([0-9]{1,4})\..*/Image_WA$3_$1$2/}%-c.%le
+
+# exiftool -P -overwrite_original "-datetimeoriginal<${filename;$_=substr($_,0,13)} 00:00" "-software=WhatsApp" .\*-WA*.jpg
