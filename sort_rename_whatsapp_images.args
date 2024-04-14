@@ -27,13 +27,7 @@ LargeFileSupport=1
 # - Check that camera make/model is not set (usually not present)
 # - Check for custom tags
 -if
-($MIMEType=~/image/ and (((not defined $Make or $Make eq "") and (not defined $Model or $Model eq "") and ($FileName=~m/.*WA[0-9]+\.jpe?g/i)) or (($Software eq "WhatsApp") or ($XMP:Creator eq "WhatsApp"))))
-
-# In most cases, WhatsApp images don't have DateTimeOriginal set and we can't
-# attempt to create the date from filename etc., as Exiftool doesn't accept 'common_args'
-# from argfile (which would allow to have '-execute' actions).
--if
-($EXIF:DateTimeOriginal and ($EXIF:DateTimeOriginal ne "0000:00:00 00:00:00"))
+($MIMEType=~/image/ and ($FileName=~m/.*WA[0-9]+\.jpe?g/i and $Make ne "" and $Model ne "") or ($Software eq "WhatsApp" or $XMP:Creator eq "WhatsApp") and $EXIF:DateTimeOriginal and ($EXIF:DateTimeOriginal ne "0000:00:00 00:00:00"))
 
 # Sort and rename files
 -d

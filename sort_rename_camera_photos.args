@@ -22,7 +22,7 @@ LargeFileSupport=1
 # - Check that camera make/model is not set (usually not present)
 # - Check for custom tags
 -if
-($MIMEType=~/image/ and (defined $Make and $Make ne "") and (defined $Model and $Model ne "") and $EXIF:DateTimeOriginal and ($EXIF:DateTimeOriginal ne "0000:00:00 00:00:00") and ($Software ne "WhatsApp" and $XMP:Creator ne "WhatsApp"))
+($MIMEType=~/image/ and ($Make ne "" and $Model ne "") and ($Software ne "WhatsApp" and $XMP:Creator ne "WhatsApp" and $Software ne "Facebook" and $XMP:Creator ne "Facebook") and $EXIF:DateTimeOriginal and ($EXIF:DateTimeOriginal ne "0000:00:00 00:00:00"))
 
 # Sort and rename files
 -d

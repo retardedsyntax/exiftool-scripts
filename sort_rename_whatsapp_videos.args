@@ -28,13 +28,7 @@ LargeFileSupport=1
 # - Attempt matching typical filenames
 # - Check for custom tags
 -if
-($MIMEType=~/video/ and (($FileName=~m/.*WA[0-9]+\.mp4/i) or ((defined $ItemList:ProductVersion and $ItemList:ProductVersion eq "WhatsApp") or (defined $ItemList:Author and $ItemList:Author eq "WhatsApp"))))
-
-# In most cases, WhatsApp videos don't have QuickTime TrackCreateDate set and we can't
-# attempt to create the date from filename etc., as Exiftool doesn't accept 'common_args'
-# from argfile (which would allow to have '-execute' actions).
--if
-($QuickTime:TrackCreateDate and ($QuickTime:TrackCreateDate ne "0000:00:00 00:00:00"))
+($MIMEType=~/video/ and (($FileName=~m/.*WA[0-9]+\.mp4/i) or ($ItemList:ProductVersion eq "WhatsApp" or $ItemList:Author eq "WhatsApp")) and $QuickTime:TrackCreateDate and ($QuickTime:TrackCreateDate ne "0000:00:00 00:00:00"))
 
 # Sort and rename files
 -d
