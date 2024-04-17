@@ -28,7 +28,7 @@ LargeFileSupport=1
 # - Attempt matching typical filenames
 # - Check for custom tags
 -if
-($MIMEType=~/video/ and (($FileName=~m/.*WA[0-9]+\.mp4/i) or ($ItemList:ProductVersion eq "WhatsApp" or $ItemList:Author eq "WhatsApp")) and $QuickTime:TrackCreateDate and ($QuickTime:TrackCreateDate ne "0000:00:00 00:00:00"))
+($MIMEType=~/video/ and ($FileName=~m/.*WA[0-9]+\.mp4/i or (defined $ItemList:ProductVersion and $ItemList:ProductVersion eq "WhatsApp") or (defined $ItemList:Author and $ItemList:Author eq "WhatsApp")) and $QuickTime:TrackCreateDate and ($QuickTime:TrackCreateDate ne "0000:00:00 00:00:00"))
 
 # Sort and rename files
 -d
