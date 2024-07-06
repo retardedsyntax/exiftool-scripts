@@ -1,0 +1,54 @@
+# Sort photos to directories by year.
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# Perl regex references:
+# https://perldoc.perl.org/perlre
+# https://perldoc.perl.org/perlop#Regexp-Quote-Like-Operators
+#
+# Online testers:
+# https://ingram-braun.net/erga/online-regex-tester-perl-php-javascript/
+# https://regex101.com/
+
+# Common options, see COMMONARGS.md for details.
+-api
+LargeFileSupport=1
+-duplicates
+-unknown2
+-ignoreMinorErrors
+-progress
+-progress:ExifTool %p%%
+-overwrite_original
+-preserve
+-v0
+-r
+
+# Process only files with 'image' MIME type.
+-if
+($MIMEType=~/image/)
+
+# Make sure that the images have some reasonable
+# DateTime tag present and set, cannot really sort otherwise.
+# Often the dates can have year set, but date, month and time
+# are set to all zeros, or to 1st of January 00:00:00.
+-if
+((defined $DateTimeOriginal and (${DateTimeOriginal#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${DateTimeOriginal#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")) or (defined $CreateDate and (${CreateDate#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${CreateDate#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")) or (defined $ModifyDate and (${ModifyDate#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${ModifyDate#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")))
+
+# Attempt best effort filtering to filter out WhatsApp/Facebook images:
+# - Filter based on filenames
+# - Check if camera make/model is set (usually is)
+# - Check for the custom tag values
+#
+# The filename regexp matches filenames with extra spaces after the extension,
+# with filename ending to either newline or line end marker ($).
+-if
+((($FileName!~m/^IMG-(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(jpe?g|png)\s*(\n|$)/i) and ($FileName!~m/^FB_IMG_(\d+).*\.(jpe?g|png)\s*(\n|$)/i)) and ((($Software ne "WhatsApp") and ($XMP:Creator ne "WhatsApp")) or (($Software ne "Facebook") and ($XMP:Creator ne "Facebook"))))
+#(defined $Make or defined $Model)
+
+# Sort files to directories by year.
+-d
+Photos/%Y
+-Directory<DateTimeOriginal
+-Directory<CreateDate
+-Directory<ModifyDate
