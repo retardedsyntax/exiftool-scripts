@@ -1,0 +1,36 @@
+# Rename JPEGs that were incorrectly marked with the PNG extension.
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# Perl regex references:
+# https://perldoc.perl.org/perlre
+# https://perldoc.perl.org/perlop#Regexp-Quote-Like-Operators
+#
+# Online testers:
+# https://ingram-braun.net/erga/online-regex-tester-perl-php-javascript/
+# https://regex101.com/
+
+# Common options, see COMMONARGS.md for details.
+-api
+LargeFileSupport=1
+-duplicates
+-unknown2
+-ignoreMinorErrors
+-progress
+-progress:ExifTool %p%%
+-overwrite_original
+-preserve
+-v0
+-r
+
+# Look for PNGs ...
+-ext
+png
+
+# ... whose content is JPEG ...
+-if
+($FileType eq "JPEG")
+
+# ... and rename to jpeg
+-Filename<${BaseName}.jpeg

@@ -1,0 +1,63 @@
+# Fill in from Google's JSON for those MP4s that were originally JPEGs.
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# Perl regex references:
+# https://perldoc.perl.org/perlre
+# https://perldoc.perl.org/perlop#Regexp-Quote-Like-Operators
+#
+# Online testers:
+# https://ingram-braun.net/erga/online-regex-tester-perl-php-javascript/
+# https://regex101.com/
+
+# Common options, see COMMONARGS.md for details.
+-api
+LargeFileSupport=1
+-duplicates
+-unknown2
+-ignoreMinorErrors
+-progress
+-progress:ExifTool %p%%
+-overwrite_original
+-preserve
+-v0
+-r
+
+# Start by looking at all MP4s.
+-ext
+mp4
+
+# Process only files with 'video' MIME type.
+-if
+($MIMEType=~/video/)
+
+# Attempt to update metadata from JSON only if it's missing.
+-if
+(($FileType eq "MP4" and (not $QuickTime:TrackCreateDate or ($QuickTime:TrackCreateDate eq "0000:00:00 00:00:00"))))
+
+# Check that the corresponding JSON exists.
+-if
+(-e "${Directory}/${FileName;s/\.mp4/.jpg.json/i}")
+
+# Attempt to read in the previous jpg.json.
+# '%f' is the filename without the extension.
+-tagsFromFile
+%d%f.jpg.json
+
+# Write out the tags. Store the original Google Photos timestamp in UserComment field.
+-UserComment<${PhotoTakenTimeTimestamp;s/^(\d+)/PhotoTakenTimeTimestamp=$1/}
+
+# General EXIF dates.
+-AllDates<${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}
+
+# QuickTime / MP4. Assume that timestamp is in UTC.
+-QuickTime:TrackCreateDate<${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}
+-QuickTime:TrackModifyDate<${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}
+-QuickTime:MediaCreateDate<${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}
+-QuickTime:MediaModifyDate<${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}
+
+# Common dates.
+-DateTimeOriginal<${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}
+-CreateDate<${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}
+-ModifyDate<${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}

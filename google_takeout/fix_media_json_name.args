@@ -1,0 +1,29 @@
+# Rename JSON files from 'img_1234.jpg(1).json' to 'img_1234(1).jpg.json'
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# Perl regex references:
+# https://perldoc.perl.org/perlre
+# https://perldoc.perl.org/perlop#Regexp-Quote-Like-Operators
+#
+# Online testers:
+# https://ingram-braun.net/erga/online-regex-tester-perl-php-javascript/
+# https://regex101.com/
+
+# Common options, see COMMONARGS.md for details.
+-progress
+-progress:ExifTool %p%%
+-overwrite_original
+-preserve
+-v0
+-r
+
+# Process only JSON files
+-ext
+json
+
+# If pattern matched, rename files
+-if
+($FileName=~/([^.]+)\.([^.]+)(\(\d+\)).json/)
+-FileName<${FileName;s/([^.]+)\.([^.]+)(\(\d+\)).json$/$1$3\.$2.json/}

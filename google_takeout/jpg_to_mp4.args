@@ -1,0 +1,38 @@
+# Rename MP4s that were incorrectly marked with the JPEG extension.
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# Perl regex references:
+# https://perldoc.perl.org/perlre
+# https://perldoc.perl.org/perlop#Regexp-Quote-Like-Operators
+#
+# Online testers:
+# https://ingram-braun.net/erga/online-regex-tester-perl-php-javascript/
+# https://regex101.com/
+
+# Common options, see COMMONARGS.md for details.
+-api
+LargeFileSupport=1
+-duplicates
+-unknown2
+-ignoreMinorErrors
+-progress
+-progress:ExifTool %p%%
+-overwrite_original
+-preserve
+-v0
+-r
+
+# Look for JPEGs ...
+-ext
+jpg
+-ext
+jpeg
+
+# ... whose content is MP4 ...
+-if
+($FileType eq "MP4")
+
+# ... and rename to mp4
+-Filename<${BaseName}.mp4

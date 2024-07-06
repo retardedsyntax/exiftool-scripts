@@ -1,0 +1,43 @@
+# Fill date/time metadata info into image files from JSON files
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# Perl regex references:
+# https://perldoc.perl.org/perlre
+# https://perldoc.perl.org/perlop#Regexp-Quote-Like-Operators
+#
+# Online testers:
+# https://ingram-braun.net/erga/online-regex-tester-perl-php-javascript/
+# https://regex101.com/
+
+-r
+
+# Process everything except JSON files.
+-ext
+json
+
+
+# Read tags from the corresponding JSON.
+#-tagsFromFile
+#%d%F
+
+-v
+
+
+-p
+'${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,1)}'
+
+-p
+'${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}'
+
+-p
+'${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0);ShiftTime("-3h");$_.="+03:00"}'
+
+-p
+'${PhotoTakenTimeTimestamp;$_=(localtime->year;)}'
+
+-p
+'${PhotoTakenTimeTimestamp;$_=TimeZoneString((GetUnixTime(ConvertUnixTime($_,1))-GetUnixTime(ConvertUnixTime($_,0)))/60)}'
+
+
