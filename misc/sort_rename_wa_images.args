@@ -19,7 +19,7 @@ LargeFileSupport=1
 -ignoreMinorErrors
 -progress
 -progress:ExifTool %p%%
-#-overwrite_original
+-overwrite_original
 -preserve
 -v0
 -r
