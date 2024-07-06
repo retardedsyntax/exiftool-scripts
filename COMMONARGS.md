@@ -7,7 +7,7 @@
 - [ExifTool library description](https://exiftool.org/ExifTool.html)
 
 ## Used arguments
-```
+```powershell
 # Enable LargeFileSupport API for parsing large media files.
 -api
 LargeFileSupport=1

@@ -1,0 +1,22 @@
+exiftool -api LargeFileSupport -duplicates -unknown2 -ignoreMinorErrors -progress -progress:'ExifTool %p%%' -overwrite_original -preserve -tagsFromFile '%d%F' -r -if '($MIMEType=~/image/ and $DateTimeOriginal and (${DateTimeOriginal#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00"))' -FileName .
+exiftool -api LargeFileSupport -duplicates -unknown2 -ignoreMinorErrors -progress -progress:'ExifTool %p%%' -overwrite_original -preserve -if '(${FileName;s/^(\d{4})\.(\d{2})\.(\d{2})_(\d{2})\.(\d{2}).*/$1:$2:$3 $4:$5/} eq ${FileModifyDate#;DateFmt("%Y:%m:%d %H:%M")})' -tagsFromFile '%d%F' -DateTimeOriginal<FileModifyDate
+exiftool -api LargeFileSupport -duplicates -unknown2 -ignoreMinorErrors -progress -progress:'ExifTool %p%%' -if '($MIMEType=~/image/ and (${DateTimeOriginalDate#;DateFmt("%m:%d %H:%M:%S")} eq "01:01 00:00:00")' '-DateTimeOriginal<${FileModifyDate#;DateFmt("%Y:%m:%d %H:%M:%S+00")}'
+exiftool -api LargeFileSupport -duplicates -unknown2 -ignoreMinorErrors -progress -progress:'ExifTool %p%%' -if '($MIMEType=~/image/ and (${DateTimeOriginal#;DateFmt("%m:%d %H:%M:%S")} eq "01:01 00:00:00")' '-CreateDate<${FileModifyDate#;DateFmt("%Y:%m:%d %H:%M:%S+0000")})' .
+exiftool -api LargeFileSupport -duplicates -unknown2 -ignoreMinorErrors -progress -progress:'ExifTool %p%%' -p '${FileName;s/^(\d{4})\.(\d{2})\.(\d{2})_(\d{2})\.(\d{2}).*/$1:$2:$3 $4:$5/;DateFmt("%s")}' .
+exiftool -api LargeFileSupport -duplicates -unknown2 -ignoreMinorErrors -progress -progress:'ExifTool %p%%' -if '(${FileName;s/^(\d{4})\.(\d{2})\.(\d{2})_(\d{2})\.(\d{2}).*/$1:$2:$3 $4:$5/;DateFmt("%s")} > ${FileModifyDate;DateFmt("%s")})' -FileName -FileModifyDate -p '${FileModifyDate#;DateFmt("%Y:%m:%d %H:%M:%S")}' .
+
+
+-p
+'${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,1)}'
+
+-p
+'${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0)}'
+
+-p
+'${PhotoTakenTimeTimestamp;$_=ConvertUnixTime($_,0);ShiftTime("-3h");$_.="+03:00"}'
+
+-p
+'${PhotoTakenTimeTimestamp;$_=(localtime->year;)}'
+
+-p
+'${PhotoTakenTimeTimestamp;$_=TimeZoneString((GetUnixTime(ConvertUnixTime($_,1))-GetUnixTime(ConvertUnixTime($_,0)))/60)}'
