@@ -1,4 +1,4 @@
-# Sort WhatsApp videos to folders sorted by year.
+# Sort and rename WhatsApp videos to folders sorted by year.
 #
 # Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
 # Writing file/directory names: https://exiftool.org/filename.html
@@ -51,13 +51,13 @@ LargeFileSupport=1
 -if
 (($FileName=~m/^VID-(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(mp4)\s*(\n|$)/i) or ((defined $ItemList:ProductVersion and $ItemList:ProductVersion eq "WhatsApp") or (defined $ItemList:Author and $ItemList:Author eq "WhatsApp")))
 
-# Sort and rename files to directories by year.
+# Sort files to directories by year.
 -d
-WhatsApp Videos/%Y
--Directory<QuickTime:TrackCreateDate
--Directory<QuickTime:TrackModifyDate
--Directory<QuickTime:MediaCreateDate
--Directory<QuickTime:MediaModifyDate
+WhatsApp Videos/%Y/WA-VID_%Y%m%d-%H%M%S-%%.4c.%%e
+-FileName<QuickTime:TrackCreateDate
+-FileName<QuickTime:TrackModifyDate
+-FileName<QuickTime:MediaCreateDate
+-FileName<QuickTime:MediaModifyDate
 
 # Add custom metadata tags to identify
 # the files easier in the future.

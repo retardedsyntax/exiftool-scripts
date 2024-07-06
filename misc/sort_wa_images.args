@@ -36,15 +36,25 @@ LargeFileSupport=1
 ((defined $DateTimeOriginal and (${DateTimeOriginal#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${DateTimeOriginal#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")) or (defined $CreateDate and (${CreateDate#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${CreateDate#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")) or (defined $ModifyDate and (${ModifyDate#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${ModifyDate#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")))
 
 # Attempt best effort filtering to match only WhatsApp images:
-# - Attempt matching typical WhatsApp filenames
-# - Check that camera make/model is not set (usually not present)
-# - Check for custom tags
+# - Look for JPEG/PNG files, where filename is of following format:
+#    * starts with 'IMG-'
+#    * has 8 numbers which look like a date YYYYMMDD
+#    * optional separator, usually dash but can be anything
+#    * optionally 6 numbers which look like a timestamp HHMMSS (rarely)
+#    * anything that is not a number (to make sure long runs of numbers are rejected)
+#    * "sequence numbering" in format WA1234
+#    * dot after sequence, with extension following
+# - Check that camera make/model is not set (usually not set)
+# - Check for the custom tag values
+#
+# The filename regexp matches filenames with extra spaces after the extension,
+# with filename ending to either newline or line end marker ($).
 -if
-((($FileName=~m/^IMG-\d{8}-WA[0-9]{1,4}\.(jpe?g|png)\s*(\n|$)/i) and ($Make eq "" and $Model eq "")) or (($Software eq "WhatsApp") or ($XMP:Creator eq "WhatsApp")))
+((($FileName=~m/^IMG-(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(jpe?g|png)\s*(\n|$)/i) and ($Make eq "" and $Model eq "")) or (($Software eq "WhatsApp") or ($XMP:Creator eq "WhatsApp")))
 
 # Sort files to directories by year.
 -d
-WhatsApp/%Y
+WhatsApp Images/%Y
 -Directory<DateTimeOriginal
 -Directory<CreateDate
 -Directory<ModifyDate

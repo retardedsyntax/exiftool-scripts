@@ -14,3 +14,5 @@
 #-TestName<${FileName;s/^IMG-([0-9]{8}).?([0-9]{6})?[^0-9].*WA([0-9]{1,4})\..*/Image_WA$3_$1$2/}%-c.%le
 
 # exiftool -P -overwrite_original "-datetimeoriginal<${filename;$_=substr($_,0,13)} 00:00" "-software=WhatsApp" .\*-WA*.jpg
+
+#($FileName=~m/^IMG-(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(jpe?g|png)\s*(\n|$)/i)
