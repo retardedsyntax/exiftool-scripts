@@ -50,7 +50,7 @@ LargeFileSupport=1
 # The filename regexp matches filenames with extra spaces after the extension,
 # with filename ending to either newline or line end marker ($).
 -if
-((($FileName=~m/^IMG-(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(jpe?g|png)\s*(\n|$)/i) and ($Make eq "" and $Model eq "")) or (($Software eq "WhatsApp") or ($XMP:Creator eq "WhatsApp")))
+(($FileName=~m/^IMG-(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(jpe?g|png)\s*(\n|$)/i) and (((defined $Make and $Make eq "") and (defined $Model and $Model eq "")) or (($Software eq "WhatsApp") or ($XMP:Creator eq "WhatsApp"))))
 
 # Sort files to directories by year.
 -d
