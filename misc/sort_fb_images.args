@@ -1,0 +1,66 @@
+# Sort Facebook images to folders sorted by year.
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# https://github.com/addshore/facebook-data-image-exif
+# https://www.carlseibert.com/facebooks-hidden-metadata-codes/
+#
+# Perl regex references:
+# https://perldoc.perl.org/perlre
+# https://perldoc.perl.org/perlop#Regexp-Quote-Like-Operators
+#
+# Online testers:
+# https://ingram-braun.net/erga/online-regex-tester-perl-php-javascript/
+# https://regex101.com/
+
+# Common options, see COMMONARGS.md for details.
+-api
+LargeFileSupport=1
+-duplicates
+-unknown2
+-ignoreMinorErrors
+-progress
+-progress:ExifTool %p%%
+-overwrite_original
+-preserve
+-v0
+-r
+
+# Process only files with 'image' MIME type.
+-if
+($MIMEType=~/image/)
+
+# Make sure that the images have some reasonable
+# DateTime tag present and set, cannot really sort otherwise.
+# Often the dates can have year set, but date, month and time
+# are set to all zeros, or to 1st of January 00:00:00.
+-if
+((defined $DateTimeOriginal and (${DateTimeOriginal#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${DateTimeOriginal#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")) or (defined $CreateDate and (${CreateDate#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${CreateDate#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")) or (defined $ModifyDate and (${ModifyDate#;DateFmt("%m:%d %H:%M:%S")} ne "00:00 00:00:00") and (${ModifyDate#;DateFmt("%m:%d %H:%M:%S")} ne "01:01 00:00:00")))
+
+# Attempt best effort filtering to match only Facebook images:
+# - Look for JPEG/PNG files, where filename is of following format:
+#    * starts with 'FB_IMG_'
+#    * TODO: figure this out? has 13+ numbers which is the timestamp
+#    * TODO: needed? anything that is not a number (to make sure long runs of numbers are rejected)
+#    * dot after sequence, with extension following
+# - Check that camera make/model is not set (usually not set)
+# - Check for the custom tag values
+#
+# The filename regexp matches filenames with extra spaces after the extension,
+# with filename ending to either newline or line end marker ($).
+-if
+((($FileName=~m/^FB_IMG_(\d+).*\.(jpe?g|png)\s*(\n|$)/i) and ($Make eq "" and $Model eq "")) or (($Software eq "Facebook") or ($XMP:Creator eq "Facebook")))
+#($FileName=~m/^FB_IMG_(\d{13,}).*\.(jpe?g|png)\s*(\n|$)/i)
+
+# Sort files to directories by year.
+-d
+Facebook Images/%Y
+-Directory<DateTimeOriginal
+-Directory<CreateDate
+-Directory<ModifyDate
+
+# Add custom metadata tags to identify
+# the files easier in the future.
+-Software=Facebook
+-XMP:Creator=Facebook
