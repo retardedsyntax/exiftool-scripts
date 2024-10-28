@@ -1,20 +1,47 @@
-#Fix images which could not be processed by f.e. 'use_json' args
+# Best-effort attempt to fix broken/corrupted metadata from images.
+#
+# References:
+# https://exiftool.org/faq.html#Q20
+#
+# Options overview:             https://exiftool.org/exiftool_pod.html#Option-Overview
+# Writing file/directory names: https://exiftool.org/filename.html
+#
+# Perl regex references:
+# https://perldoc.perl.org/perlre
+# https://perldoc.perl.org/perlop#Regexp-Quote-Like-Operators
+#
+# Online testers:
+# https://ingram-braun.net/erga/online-regex-tester-perl-php-javascript/
+# https://regex101.com/
+
+# Common options, see COMMONARGS.md for details.
+-api
+LargeFileSupport=1
+-duplicates
+-unknown2
+-progress
+-progress:ExifTool %p%%
+-preserve
 -r
 
-#-if 
-#(uc $FileExtension ne "JSON")
+# Process only files with 'image' MIME type.
+-if
+($MIMEType=~/image/)
 
-# Clean all
--all= 
+# Clean all tag values.
+-all=
 
-# Load not corrupted
--tagsfromfile
+# Load non-corrupted tag values from the file.
+-tagsFromFile
 %d%F
 
-#Set them back
+# Write all the tag data back.
 -all:all
 
+# 'unsafe' makes exiftool to copy tags that are not normally copied
 -unsafe
+
+# ICC profiles are not covered by 'unsafe' and must be specified separately
 -icc_profile
 
 # Clobber everything
