@@ -60,7 +60,6 @@ Facebook Images/%Y
 -Directory<CreateDate
 -Directory<ModifyDate
 
-# Add custom metadata tags to identify
-# the files easier in the future.
+# Add custom metadata tags for easy identification.
 -Software=Facebook
 -XMP:Creator=Facebook

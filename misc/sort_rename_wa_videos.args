@@ -37,7 +37,8 @@ LargeFileSupport=1
 
 # Attempt best effort filtering to match only WhatsApp videos:
 # - Look for MP4 files, where filename is of following format:
-#    * starts with 'VID-'
+#    * starts with 'VID'
+#    * optional separator, usually dash but can be anything
 #    * has 8 numbers which look like a date YYYYMMDD
 #    * optional separator, usually dash but can be anything
 #    * optionally 6 numbers which look like a timestamp HHMMSS (rarely)
@@ -49,7 +50,7 @@ LargeFileSupport=1
 # The filename regexp matches filenames with extra spaces after the extension,
 # with filename ending to either newline or line end marker ($).
 -if
-(($FileName=~m/^VID-(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(mp4)\s*(\n|$)/i) or ((defined $ItemList:ProductVersion and $ItemList:ProductVersion eq "WhatsApp") or (defined $ItemList:Author and $ItemList:Author eq "WhatsApp")))
+(($FileName=~m/^VID.?(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(mp4)\s*(\n|$)/i) or ((defined $ItemList:ProductVersion and $ItemList:ProductVersion eq "WhatsApp") or (defined $ItemList:Author and $ItemList:Author eq "WhatsApp")))
 
 # Sort files to directories by year.
 -d
@@ -59,7 +60,6 @@ WhatsApp Videos/%Y/WA-VID_%Y%m%d-%H%M%S-%%.4c.%%e
 -FileName<QuickTime:MediaCreateDate
 -FileName<QuickTime:MediaModifyDate
 
-# Add custom metadata tags to identify
-# the files easier in the future.
+# Add custom metadata tags for easy identification.
 -ItemList:ProductVersion=WhatsApp
 -ItemList:Author=WhatsApp

@@ -42,7 +42,7 @@ LargeFileSupport=1
 # The filename regexp matches filenames with extra spaces after the extension,
 # with filename ending to either newline or line end marker ($).
 -if
-(($FileName!~m/^VID-(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(mp4)\s*(\n|$)/i) and (($ItemList:ProductVersion ne "WhatsApp") and ($ItemList:Author ne "WhatsApp")))
+(($FileName!~m/^VID.?(\d{8}).?(\d{6})?.*WA(\d{1,4})\.(mp4)\s*(\n|$)/i) and (($ItemList:ProductVersion ne "WhatsApp") and ($ItemList:Author ne "WhatsApp")))
 #(($ItemList:ProductVersion ne "WhatsApp") and ($ItemList:Author ne "WhatsApp"))
 
 # Sort files to directories by year.
